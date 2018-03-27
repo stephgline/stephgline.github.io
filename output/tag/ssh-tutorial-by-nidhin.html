@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="utf-8" />
+        <title>stephs blog - ssh tutorial by nidhin</title>
+        <link rel="stylesheet" href="/theme/css/main.css" />
+
+        <!--[if IE]>
+            <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="/">stephs blog </a></h1>
+                <nav><ul>
+                    <li><a href="/category/tutorial.html">tutorial</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/ssh-config.html">SSH Config</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2018-03-26T00:00:00-05:00">
+                Published: Mon 26 March 2018
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/steph-gline.html">steph gline</a>
+        </address>
+<p>In <a href="/category/tutorial.html">tutorial</a>.</p>
+<p>tags: <a href="/tag/ssh-tutorial-by-nidhin.html">ssh tutorial by nidhin</a> </p>
+</footer><!-- /.post-info --><h1>Description</h1>
+<p>In our current setup, to access a machine, we need to go through a jump server.
+Without an ~/.sssh/config file, the step involves multiple ssh commands</p>
+<p>This guide shows how to ssh to remote servers with a single ssh command</p>
+<h1>Without ssh config</h1>
+<p>a) Connect to host "server" using host "jump"</p>
+<div class="highlight"><pre><span></span>ssh -v jump -t ssh -v server
+</pre></div>
+
+
+<p>or</p>
+<div class="highlight"><pre><span></span>ssh -o ProxyJump=jump server
+</pre></div>
+
+
+<p>b) Connect to host "server" using host "jump" with port forwarding for port 8082</p>
+<div class="highlight"><pre><span></span>ssh -v -L8082:localhost:8082 jump  -t ssh -v -L8082:localhost:8082 server
+</pre></div>
+
+
+<h1>With ssh config</h1>
+<p>a) Connect to host "server" using host "jump"</p>
+<div class="highlight"><pre><span></span>ssh -v server
+</pre></div>
+
+
+<p>b) Connect to host "server" using host "jump" with port forwarding for port 8082</p>
+<div class="highlight"><pre><span></span>ssh -v -L8082:localhost:8082 luigi
+</pre></div>
+
+
+<h1>Steps</h1>
+<ol>
+<li>edit ~/.ssh/config on your local machine</li>
+</ol>
+<div class="highlight"><pre><span></span>nano ~/.ssh/config
+</pre></div>
+
+
+<ol>
+<li>Copy the attached ssh_config file</li>
+</ol>
+<h1>Tests</h1>
+<ol>
+<li>ssh to our etl machine (luigi)</li>
+</ol>
+<div class="highlight"><pre><span></span>ssh -v luigi
+</pre></div>
+
+
+<ol>
+<li>ssh to our etl machine (luigi) with port forwarding</li>
+</ol>
+<div class="highlight"><pre><span></span>ssh -v -L8082:localhost:8082 luigi
+</pre></div>
+
+
+<ol>
+<li>copy local file to etl machine</li>
+</ol>
+<div class="highlight"><pre><span></span>scp -r data/sample.txt luigi:/tmp
+</pre></div>
+
+
+<h1>Notes</h1>
+<ol>
+<li>Old Version of ssh (openss)
+If you have an older version of ssh (&lt;7.3), the directive ProxyJump won't work.
+You have to replace the line</li>
+</ol>
+<div class="highlight"><pre><span></span>ProxyJump jump
+</pre></div>
+
+
+<p>with</p>
+<div class="highlight"><pre><span></span>ProxyCommand ssh -q -W %h:%p jump
+</pre></div>
+
+
+<ol>
+<li>Lingering ssh connections
+Sometimes, when you close the ssh connection, the ssh tunnel might still be running. To force kill the tunnel, kill all process running on the opened port</li>
+</ol>
+<p>all process running on port 8082</p>
+<div class="highlight"><pre><span></span>lsof -i :8082
+</pre></div>
+
+
+<p>kill process (PID)</p>
+<div class="highlight"><pre><span></span>kill -9 &lt;Process ID&gt;
+</pre></div>                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="http://getpelican.com/">Pelican</a></li>
+                            <li><a href="http://python.org/">Python.org</a></li>
+                            <li><a href="http://jinja.pocoo.org/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="http://getpelican.com/">Pelican</a>, which takes great advantage of <a href="http://python.org">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="http://coding.smashingmagazine.com/2009/08/04/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
